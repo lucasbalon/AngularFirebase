@@ -17,6 +17,6 @@ export class AuthComponent {
   ) {}
 
   SignIn() {
-    this.authService.SignIn(this.email, this.password);
+    this.authService.signIn(this.email, this.password);
   }
 }

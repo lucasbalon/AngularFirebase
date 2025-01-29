@@ -1,0 +1,12 @@
+<mat-toolbar color="primary">
+  <a mat-button routerLink="/login">Login</a>
+  <a mat-button routerLink="/dashboard">Dashboard</a>
+  <button [matMenuTriggerFor]="encodeMenu" mat-button>Test déroulant</button>
+  <mat-menu #encodeMenu="matMenu">
+    <button mat-menu-item routerLink="/login">Login</button>
+    <button mat-menu-item routerLink="/dashboard">Dashboard</button>
+    <button mat-menu-item routerLink="/scan">Échographie</button>
+    <button mat-menu-item routerLink="/injection">Injection</button>
+    <button mat-menu-item routerLink="/sale">Vente</button>
+  </mat-menu>
+</mat-toolbar>

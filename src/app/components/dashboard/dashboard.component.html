@@ -1,0 +1,12 @@
+<div class="container">
+  <h1> add robot </h1>
+  <form (ngSubmit)="addRobot(name, color, age)">
+    <p> name </p>
+    <input name="name" [(ngModel)]="name">
+    <p> color </p>
+    <input name="color" [(ngModel)]="color">
+    <p> age </p>
+    <input name="age" [(ngModel)]="age">
+    <button type="submit"> submit </button>
+  </form>
+</div>

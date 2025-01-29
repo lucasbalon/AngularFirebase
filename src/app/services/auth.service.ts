@@ -1,82 +1,84 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { User } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  userData: User | undefined;
-
+  userData: User | null = null;
 
   constructor(
-    public afAuth: AngularFireAuth, // Inject Firebase auth service
-    public router: Router
+    private auth: Auth, // Inject Firebase Auth from the new modular API
+    private router: Router
   ) {
-    /* Saving user data in localstorage when
-    logged in and setting up null when logged out */
-    this.afAuth.authState.subscribe((user: any) => { // adjust the type according to your needs
+    // Subscribe to auth state changes
+    this.auth.onAuthStateChanged((user) => {
       if (user) {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
+      } else {
+        this.userData = null;
+        localStorage.removeItem('user');
       }
     });
   }
 
   // Sign in with email/password
-  SignIn(email: string, password: string) {
-    return this.afAuth.signInWithEmailAndPassword(email, password)
-      .then((result) => {
-        this.router.navigate(['dashboard']);
-      }).catch((error) => {
-        window.alert(error.message);
-      });
+  async signIn(email: string, password: string): Promise<void> {
+    try {
+      await signInWithEmailAndPassword(this.auth, email, password);
+      this.router.navigate(['dashboard']);
+    } catch (error: any) {
+      window.alert(error.message);
+    }
   }
 
   // Sign up with email/password
-  SignUp(email: string, password: string) {
-    return this.afAuth.createUserWithEmailAndPassword(email, password)
-      .then((result) => {
-        /* Call the SendVerificationMail() function when new user sign
-        up and returns promise */
-        this.SendVerificationMail();
-        this.router.navigate(['verify-email-address']);
-      }).catch((error) => {
-        window.alert(error.message);
-      });
+  async signUp(email: string, password: string): Promise<void> {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      await this.sendVerificationMail(userCredential.user);
+      this.router.navigate(['verify-email-address']);
+    } catch (error: any) {
+      window.alert(error.message);
+    }
   }
 
-  // Send email verification when new user signs up
-  SendVerificationMail() {
-    return this.afAuth.currentUser.then((u: any) => u.sendEmailVerification())
-      .then(() => {
-        this.router.navigate(['email-verification']);
-      });
+  // Send email verification
+  async sendVerificationMail(user: User): Promise<void> {
+    try {
+      await sendEmailVerification(user);
+      this.router.navigate(['verify-email-address']);
+    } catch (error: any) {
+      console.error('Error sending verification email:', error);
+    }
   }
 
   // Reset password
-  PasswordReset(passwordResetEmail: string) {
-    return this.afAuth.sendPasswordResetEmail(passwordResetEmail)
-      .then(() => {
-        window.alert('Password reset email sent, check your inbox.');
-      }).catch((error) => {
-        window.alert(error);
-      });
+  async passwordReset(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(this.auth, email);
+      window.alert('Password reset email sent, check your inbox.');
+    } catch (error: any) {
+      window.alert(error.message);
+    }
   }
 
   // Sign out
-  SignOut() {
-    return this.afAuth.signOut().then(() => {
+  async signOut(): Promise<void> {
+    try {
+      await signOut(this.auth);
       localStorage.removeItem('user');
       this.router.navigate(['sign-in']);
-    });
+    } catch (error: any) {
+      console.error('Error signing out:', error);
+    }
   }
 
-  // Returns true if user is logged in
+  // Check if user is logged in
   get isLoggedIn(): boolean {
     const user = JSON.parse(<string>localStorage.getItem('user'));
-    return (user !== null && user.emailVerified !== false);
+    return !!user && user.emailVerified !== false;
   }
-
 }
