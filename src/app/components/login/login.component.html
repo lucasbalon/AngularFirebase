@@ -1,0 +1,42 @@
+<div class="centered-form">
+  <form (ngSubmit)="login()" [formGroup]="loginForm" class="elevated-form">
+    <h2>Se connecter</h2>
+
+    <!-- Champ Email -->
+    <mat-form-field class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" required type="email">
+      <mat-error *ngIf="loginForm.controls['email']">
+        L'email est requis.
+      </mat-error>
+      <mat-error *ngIf="loginForm.controls['email']">
+        L'email n'est pas valide.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Champ Password -->
+    <mat-form-field class="full-width">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput formControlName="password" required type="password">
+      <mat-error *ngIf="loginForm.controls['password']">
+        Le mot de passe est requis.
+      </mat-error>
+      <mat-error *ngIf="loginForm.controls['password']">
+        Le mot de passe doit avoir au moins 6 caractères.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Boutons -->
+    <button *ngIf="!loading" [disabled]="loginForm.invalid" color="primary" mat-raised-button>Se connecter</button>
+    <mat-spinner *ngIf="loading" diameter="30"></mat-spinner>
+
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <div>
+      <button mat-button (click)="navigateToSignUp()">S'inscrire</button>
+      <button mat-button (click)="resetPassword()">Mot de passe oublié ?</button>
+    </div>
+  </form>
+</div>

@@ -12,21 +12,29 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 import { firebaseConfig } from '../environments/environment.development';
 
-import { AuthComponent } from './components/auth/auth.component';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { MatAnchor, MatButton } from '@angular/material/button';
+import {MatAnchor, MatButton, MatButtonModule} from '@angular/material/button';
+import { UploadComponent } from './components/upload/upload.component';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {FirebaseAuthInterceptor} from './interceptors/auth.interceptor';
+import { LoginComponent } from './components/login/login.component';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AuthComponent,
     DashboardComponent,
-    NavbarComponent
+    NavbarComponent,
+    UploadComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -39,9 +47,17 @@ import { MatAnchor, MatButton } from '@angular/material/button';
     MatMenuTrigger,
     MatMenuItem,
     MatAnchor,
-    MatButton
+    MatButton,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatToolbar,
   ],
   providers: [
+    //{ provide: HTTP_INTERCEPTORS, useClass: FirebaseAuthInterceptor, multi: true },
     // Nouvelle API Firebase modulaire
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),

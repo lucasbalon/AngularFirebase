@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {AuthComponent} from './components/auth/auth.component';
 import {DashboardComponent} from './components/dashboard/dashboard.component';
+import {UploadComponent} from './components/upload/upload.component';
+import {AuthGuard} from '@angular/fire/auth-guard';
+import {LoginComponent} from './components/login/login.component';
 
 const routes: Routes = [
-  { path: '', component: AuthComponent },
-  { path: 'login', component: AuthComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'upload', component: UploadComponent, canActivate: [AuthGuard]  },
   //{ path: '**', component: PageNotFoundComponent } // Route pour les pages non trouvées (404)
 ];
 

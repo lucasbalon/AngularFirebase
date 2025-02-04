@@ -1,0 +1,2 @@
+<input type="file" (change)="onFileSelected($event)" />
+<p *ngIf="downloadURL">Lien du fichier : <a [href]="downloadURL" target="_blank">{{ downloadURL }}</a></p>

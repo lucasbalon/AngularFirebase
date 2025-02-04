@@ -1,12 +1,23 @@
 <mat-toolbar color="primary">
-  <a mat-button routerLink="/login">Login</a>
-  <a mat-button routerLink="/dashboard">Dashboard</a>
-  <button [matMenuTriggerFor]="encodeMenu" mat-button>Test déroulant</button>
-  <mat-menu #encodeMenu="matMenu">
-    <button mat-menu-item routerLink="/login">Login</button>
-    <button mat-menu-item routerLink="/dashboard">Dashboard</button>
-    <button mat-menu-item routerLink="/scan">Échographie</button>
-    <button mat-menu-item routerLink="/injection">Injection</button>
-    <button mat-menu-item routerLink="/sale">Vente</button>
-  </mat-menu>
+  <!-- Lien de connexion -->
+  <a mat-button routerLink="/login" *ngIf="!isLoggedIn">Login</a>
+
+  <!-- Lien Dashboard -->
+  <a mat-button routerLink="/dashboard" *ngIf="isLoggedIn">Dashboard</a>
+
+  <!-- Lien Upload -->
+  <a mat-button routerLink="/upload" *ngIf="isLoggedIn">Upload</a>
+
+  <!-- Menu déroulant -->
+<!--  <button [matMenuTriggerFor]="encodeMenu" mat-button>Test déroulant</button>
+&lt;!&ndash;  <mat-menu #encodeMenu="matMenu">
+    <button mat-menu-item routerLink="/login" *ngIf="!isLoggedIn">Login</button>
+    <button mat-menu-item routerLink="/dashboard" *ngIf="isLoggedIn">Dashboard</button>
+    <button mat-menu-item routerLink="/scan" *ngIf="isLoggedIn">Échographie</button>
+    <button mat-menu-item routerLink="/injection" *ngIf="isLoggedIn">Injection</button>
+    <button mat-menu-item routerLink="/sale" *ngIf="isLoggedIn">Vente</button>
+  </mat-menu>&ndash;&gt;-->
+
+  <!-- Bouton de déconnexion -->
+  <button mat-button *ngIf="isLoggedIn" (click)="logout()">Déconnexion</button>
 </mat-toolbar>
