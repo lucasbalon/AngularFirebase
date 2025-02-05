@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, User } from '@angular/fire/auth';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +9,6 @@ export class AuthService {
 
   constructor(
     private auth: Auth, // Inject Firebase Auth from the new modular API
-    private router: Router
   ) {
     // Subscribe to auth state changes
     this.auth.onAuthStateChanged((user) => {
@@ -28,7 +26,6 @@ export class AuthService {
   async signIn(email: string, password: string): Promise<void> {
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      this.router.navigate(['dashboard']);
     } catch (error: any) {
       window.alert(error.message);
     }
@@ -39,7 +36,6 @@ export class AuthService {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       await this.sendVerificationMail(userCredential.user);
-      this.router.navigate(['verify-email-address']);
     } catch (error: any) {
       window.alert(error.message);
     }
@@ -49,7 +45,6 @@ export class AuthService {
   async sendVerificationMail(user: User): Promise<void> {
     try {
       await sendEmailVerification(user);
-      this.router.navigate(['verify-email-address']);
     } catch (error: any) {
       console.error('Error sending verification email:', error);
     }
@@ -70,7 +65,6 @@ export class AuthService {
     try {
       await signOut(this.auth);
       localStorage.removeItem('user');
-      this.router.navigate(['sign-in']);
     } catch (error: any) {
       console.error('Error signing out:', error);
     }
