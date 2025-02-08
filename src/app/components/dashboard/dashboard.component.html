@@ -1,12 +1,11 @@
-<div class="container">
-  <h1> add robot </h1>
-  <form (ngSubmit)="addRobot(name, color, age)">
-    <p> name </p>
-    <input name="name" [(ngModel)]="name">
-    <p> color </p>
-    <input name="color" [(ngModel)]="color">
-    <p> age </p>
-    <input name="age" [(ngModel)]="age">
-    <button type="submit"> submit </button>
-  </form>
+<div class="product-list">
+  <mat-card *ngFor="let product of products" class="product-card">
+    <mat-card-header>
+      <mat-card-title>{{ product.name }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Description:</strong> {{ product.description || 'N/A' }}</p>
+      <p><strong>Points:</strong> {{ product.pointCost }}</p>
+    </mat-card-content>
+  </mat-card>
 </div>

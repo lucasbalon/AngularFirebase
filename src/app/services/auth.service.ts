@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, User } from '@angular/fire/auth';
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  User,
+  sendPasswordResetEmail
+} from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +18,10 @@ export class AuthService {
   userData: User | null = null;
 
   constructor(
-    private auth: Auth, // Inject Firebase Auth from the new modular API
+    private auth: Auth,
+    private firestore: Firestore,
     private router: Router
   ) {
-    // Subscribe to auth state changes
     this.auth.onAuthStateChanged((user) => {
       if (user) {
         this.userData = user;
@@ -24,35 +33,48 @@ export class AuthService {
     });
   }
 
-  // Sign in with email/password
   async signIn(email: string, password: string): Promise<void> {
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      this.router.navigate(['dashboard']);
+      await this.router.navigate(['dashboard']);
     } catch (error: any) {
       window.alert(error.message);
     }
   }
 
-  // Sign up with email/password
-  async signUp(email: string, password: string): Promise<void> {
+  async signUp(email: string, password: string, name: string): Promise<void> {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-      await this.sendVerificationMail(userCredential.user);
-      this.router.navigate(['verify-email-address']);
+      await this.checkAndAddUserToFirestore(userCredential.user.uid, name, email);
+      await sendEmailVerification(userCredential.user);
+      await this.router.navigate(['verify-email-address']);
     } catch (error: any) {
       window.alert(error.message);
     }
   }
 
-  // Send email verification
-  async sendVerificationMail(user: User): Promise<void> {
-    try {
-      await sendEmailVerification(user);
-      this.router.navigate(['verify-email-address']);
-    } catch (error: any) {
-      console.error('Error sending verification email:', error);
+  private async checkAndAddUserToFirestore(uid: string, name: string, email: string) {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, { name, email, role: "worker", points: 100 });
     }
+  }
+
+  async signOut(): Promise<void> {
+    try {
+      await signOut(this.auth);
+      localStorage.removeItem('user');
+      await this.router.navigate(['sign-in']);
+    } catch (error: any) {
+      console.error('Error signing out:', error);
+    }
+  }
+  // Check if user is logged in
+  get isLoggedIn(): boolean {
+    const user = JSON.parse(<string>localStorage.getItem('user'));
+    return !!user /*&& user.emailVerified !== false*/;
   }
 
   // Reset password
@@ -63,22 +85,5 @@ export class AuthService {
     } catch (error: any) {
       window.alert(error.message);
     }
-  }
-
-  // Sign out
-  async signOut(): Promise<void> {
-    try {
-      await signOut(this.auth);
-      localStorage.removeItem('user');
-      this.router.navigate(['sign-in']);
-    } catch (error: any) {
-      console.error('Error signing out:', error);
-    }
-  }
-
-  // Check if user is logged in
-  get isLoggedIn(): boolean {
-    const user = JSON.parse(<string>localStorage.getItem('user'));
-    return !!user /*&& user.emailVerified !== false*/;
   }
 }

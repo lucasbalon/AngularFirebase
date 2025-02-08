@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import {FirestoreService} from '../../services/firestore.service';
+import {Product} from '../../models/Product';
+import {ProductService} from '../../services/product.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,13 +10,19 @@ import {FirestoreService} from '../../services/firestore.service';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  name: string = "";
-  color: any;
-  age: any;
+  products: Product[] = [];
 
-  constructor(public firestoreService: FirestoreService) { }
+  displayedColumns: string[] = ['name', 'description', 'pointCost']; // Colonnes à afficher dans la table
 
-  addRobot(name: string, color: string, age: string) {
-    this.firestoreService.createRobot(name, color, age);
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.loadProducts();
+  }
+
+  // Charger tous les produits depuis le service
+  async loadProducts() {
+    this.products = await this.productService.getProducts();
+    console.log(this.products);
   }
 }

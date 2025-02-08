@@ -1,0 +1,14 @@
+mat-card {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-actions {
+  margin-top: 20px;
+  text-align: right;
+}

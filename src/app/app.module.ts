@@ -27,6 +27,17 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatCard, MatCardHeader, MatCardModule} from '@angular/material/card';
+import {
+  MatCell, MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow, MatHeaderRowDef,
+  MatRow, MatRowDef,
+  MatTable
+} from '@angular/material/table';
+import { CreateProductComponent } from './components/create-product/create-product.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +45,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     DashboardComponent,
     NavbarComponent,
     UploadComponent,
-    LoginComponent
+    LoginComponent,
+    CreateProductComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +67,19 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatIconModule,
     MatProgressSpinnerModule,
     MatToolbar,
+    MatCard,
+    MatCardHeader,
+    MatTable,
+    MatHeaderCell,
+    MatCell,
+    MatColumnDef,
+    MatHeaderRow,
+    MatRow,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatCardModule
   ],
   providers: [
     //{ provide: HTTP_INTERCEPTORS, useClass: FirebaseAuthInterceptor, multi: true },
