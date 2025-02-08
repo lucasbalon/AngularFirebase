@@ -38,6 +38,8 @@ import {
   MatTable
 } from '@angular/material/table';
 import { CreateProductComponent } from './components/create-product/create-product.component';
+import { SignupComponent } from './components/signup/signup.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import { CreateProductComponent } from './components/create-product/create-produ
     NavbarComponent,
     UploadComponent,
     LoginComponent,
-    CreateProductComponent
+    CreateProductComponent,
+    SignupComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

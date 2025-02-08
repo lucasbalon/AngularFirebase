@@ -10,6 +10,7 @@ import {
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class AuthService {
   constructor(
     private auth: Auth,
     private firestore: Firestore,
-    private router: Router
+    private router: Router,
+    private _snackBar: MatSnackBar
   ) {
     this.auth.onAuthStateChanged((user) => {
       if (user) {
@@ -35,21 +37,40 @@ export class AuthService {
 
   async signIn(email: string, password: string): Promise<void> {
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      const user: User | null = userCredential.user;
+      if (user && !user.emailVerified) {
+        await signOut(this.auth);  // Déconnexion immédiate
+        this._snackBar.open('Veuillez vérifier votre adresse e-mail avant de vous connecter.', 'Fermer', {
+          duration: 6000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['snack-bar-error'] // Facultatif : ajoute une classe personnalisée pour le style
+        });
+      }
       await this.router.navigate(['dashboard']);
     } catch (error: any) {
-      window.alert(error.message);
+      //window.alert(error.message);
     }
   }
 
+
+  // Méthode d'inscription
   async signUp(email: string, password: string, name: string): Promise<void> {
     try {
+      // Création de l'utilisateur avec email et mot de passe
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+
+      // Ajouter l'utilisateur à Firestore
       await this.checkAndAddUserToFirestore(userCredential.user.uid, name, email);
+
+      // Envoi de l'email de vérification
       await sendEmailVerification(userCredential.user);
-      await this.router.navigate(['verify-email-address']);
+
+      await signOut(this.auth);
     } catch (error: any) {
-      window.alert(error.message);
+      // Gérez l'erreur ici, par exemple afficher un message
+      console.error('Erreur d\'inscription :', error.message);
     }
   }
 
@@ -81,9 +102,9 @@ export class AuthService {
   async passwordReset(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(this.auth, email);
-      window.alert('Password reset email sent, check your inbox.');
+      //window.alert('Password reset email sent, check your inbox.');
     } catch (error: any) {
-      window.alert(error.message);
+      //window.alert(error.message);
     }
   }
 }

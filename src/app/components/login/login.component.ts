@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private readonly _formBuilder: FormBuilder,
     private readonly _router: Router,
-    private readonly _authService: AuthService
+    private readonly _authService: AuthService,
+    private readonly location: Location
   ) {
     this.loginForm = this._formBuilder.group({
       email: ['', [Validators.required, Validators.email]], // Validation pour l'email
@@ -48,14 +50,14 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  navigateToSignUp(): void {
-    this._router.navigate(['sign-up']);
-  }
-
   resetPassword(): void {
     const email = this.loginForm.get('email')?.value;
     if (email) {
       this._authService.passwordReset(email);
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

@@ -1,0 +1,30 @@
+<button (click)="goBack()" mat-icon-button>
+  <mat-icon>arrow_back</mat-icon>
+</button>
+
+<div class="centered-form">
+  <form (ngSubmit)="signUp()" [formGroup]="signUpForm" class="elevated-form">
+    <mat-form-field>
+      <mat-label>Nom</mat-label>
+      <input formControlName="name" matInput required>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input formControlName="email" matInput required type="email">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Mot de passe</mat-label>
+      <input formControlName="password" matInput type="password" required>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Confirmer le mot de passe</mat-label>
+      <input formControlName="confirmPassword" matInput type="password" required>
+      <mat-error *ngIf="signUpForm.hasError('passwordMismatch')">Les mots de passe ne correspondent pas.</mat-error>
+    </mat-form-field>
+
+    <button [disabled]="signUpForm.invalid" color="primary" mat-raised-button>Inscription</button>
+  </form>
+</div>
